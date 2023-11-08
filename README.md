@@ -43,3 +43,33 @@ sudo systemctl start my_java_app  // 启动服务
 sudo systemctl status my_java_app // 运行状态,可以用这个看输出
 sudo systemctl stop my_java_app // 关闭服务
 ```
+
+## 查看正在运行的java程序
+
+要查看正在运行的Java程序，您可以使用jps（Java Virtual Machine Process Status Tool）命令，它通常随Java开发工具包（JDK）一起安装。jps命令显示正在运行的Java进程的列表以及它们的进程ID（PID）和类名。
+
+在终端中，只需键入以下命令以列出正在运行的Java程序：
+
+```
+jps
+```
+
+jps命令将显示正在运行的Java进程的列表，例如：
+
+```
+12345 Jps
+6789 MyJavaApplication
+```
+
+上面的示例显示了两个Java进程。第一列是PID，第二列是Java程序的类名或主类名。您可以根据需要查看正在运行的Java程序的信息，以便了解其状态和PID。
+
+如果您想查看特定Java进程的详细信息，可以使用jstack或jinfo等其他Java工具。这些工具通常随JDK一起安装，可以用于诊断和监视Java应用程序的性能和运行时状态。例如，要获取特定Java进程的线程堆栈信息，可以使用jstack命令：
+
+```
+Copy code
+jstack PID
+```
+
+将上面的命令中的PID替换为您要查看的Java进程的PID。这将输出有关Java进程中运行的线程的详细信息。
+
+请注意，您需要在具有足够权限的环境中运行这些命令，以便访问正在运行的Java进程的信息。
