@@ -66,7 +66,6 @@ jps命令将显示正在运行的Java进程的列表，例如：
 如果您想查看特定Java进程的详细信息，可以使用jstack或jinfo等其他Java工具。这些工具通常随JDK一起安装，可以用于诊断和监视Java应用程序的性能和运行时状态。例如，要获取特定Java进程的线程堆栈信息，可以使用jstack命令：
 
 ```
-Copy code
 jstack PID
 ```
 
