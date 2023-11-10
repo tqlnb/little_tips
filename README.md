@@ -43,6 +43,7 @@ sudo systemctl daemon-reload //重新加载Systemd服务配置：
 sudo systemctl enable my_java_app // 启用服务，以使其在系统启动时自动启动
 sudo systemctl start my_java_app  // 启动服务
 sudo systemctl status my_java_app // 运行状态,可以用这个看输出
+sudo systemctl status -n 100 my_java_app // 运行状态,可以用这个看输出，一次100行（实测可以输出更多行）
 sudo systemctl stop my_java_app // 关闭服务
 ```
 
