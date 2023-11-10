@@ -20,6 +20,7 @@ Description=My Java Application
 [Service]
 ExecStart=/usr/bin/java -jar /path/to/daemon.jar
 WorkingDirectory=/path/to/application/directory
+Environment="PATH=/home/root/bin/jdk/bin:$PATH"
 Restart=always
 User=your_username
 
@@ -33,6 +34,7 @@ WantedBy=multi-user.target
      - WorkingDirectory : 工作目录
      - Restart=always :开机自启动
      - User : 用户名(如root)
+     - Environment 如果你的应用是以 service 形式运行的，而不是通过交互式终端登录，那么你可能需要编辑与你的服务相关的启动脚本或配置文件，以确保正确设置了 PATH 环境变量。
 
 3. 启动服务
 
