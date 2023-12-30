@@ -75,3 +75,9 @@ jstack PID
 将上面的命令中的PID替换为您要查看的Java进程的PID。这将输出有关Java进程中运行的线程的详细信息。
 
 请注意，您需要在具有足够权限的环境中运行这些命令，以便访问正在运行的Java进程的信息。
+
+## 远程调试
+
+![image](https://github.com/tqlnb/little_tips/assets/88382462/54df9d1f-e596-4e9c-980f-cfee4daeb639)
+
+
