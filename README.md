@@ -81,3 +81,420 @@ jstack PID
 ![image](https://github.com/tqlnb/little_tips/assets/88382462/54df9d1f-e596-4e9c-980f-cfee4daeb639)
 
 
+
+## maven移植
+
+把项目包含对应的依赖一起移植
+
+pom.xml：
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>ins.daemon</groupId>
+  <artifactId>daemon</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>daemon</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <!-- 设置编译等级和目标等级 -->
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Log4j Core -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.14.1</version> <!-- Use the latest version available -->
+    </dependency>
+
+    <!-- SLF4J Log4j 2 绑定 -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>2.14.1</version> <!-- 使用你当前 Log4j 2 版本 -->
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
+    <dependency>
+      <groupId>cn.hutool</groupId>
+      <artifactId>hutool-all</artifactId>
+      <version>5.8.24</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.json/json -->
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20231013</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.grpc/grpc-core -->
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-core</artifactId>
+      <version>1.60.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.grpc/grpc-stub -->
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-stub</artifactId>
+      <version>1.60.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.grpc/grpc-protobuf -->
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-protobuf</artifactId>
+      <version>1.60.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.grpc/grpc-api -->
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-api</artifactId>
+      <version>1.60.1</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.grpc/grpc-netty -->
+    <dependency>
+      <groupId>io.grpc</groupId>
+      <artifactId>grpc-netty</artifactId>
+      <version>1.60.1</version>
+    </dependency>
+
+
+    <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-assembly-plugin -->
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-assembly-plugin</artifactId>
+      <version>3.6.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.12.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.siteraid.instr.visa</groupId>
+      <artifactId>InsVisaGrpc</artifactId>
+      <version>1.4-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/InsVisaGrpc-1.4-SNAPSHOT.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>src</groupId>
+      <artifactId>GrpcPlugin</artifactId>
+      <version>0.0.4-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/GrpcPlugin-0.0.4-SNAPSHOT.jar</systemPath>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.12.1</version>
+        <inherited>true</inherited>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <compilerArguments>
+            <extdirs>${project.basedir}/lib</extdirs>
+            <extdirs>${project.basedir}/log4j2.xml</extdirs>
+          </compilerArguments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <archive>
+                <manifest>
+                  <mainClass>
+                    ins.daemon.app.Daemon
+                  </mainClass>
+                </manifest>
+                <manifestEntries>
+                  <Class-Path>lib/*.jar</Class-Path>
+                </manifestEntries>
+              </archive>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <descriptors>
+                <!--assembly配置文件路径，注意需要在项目中新建文件assembly/release.xml-->
+                <descriptor>${basedir}/assembly/release.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>assembly</directory>
+        <targetPath>${project.build.outputDirectory}/assembly</targetPath>
+        <includes>
+          <include>release.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>lib</directory>
+        <targetPath>${project.build.outputDirectory}/lib</targetPath>
+        <includes>
+          <include>InsVisaGrpc-1.4-SNAPSHOT.jar</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+
+</project>
+
+```
+
+编译等级和目标等级
+
+```xml
+<properties>
+    <!-- 设置编译等级和目标等级 -->
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+```
+
+log4j:
+
+```xml
+ <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Log4j Core -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.14.1</version> <!-- Use the latest version available -->
+    </dependency>
+
+    <!-- SLF4J Log4j 2 绑定 -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>2.14.1</version> <!-- 使用你当前 Log4j 2 版本 -->
+    </dependency>
+```
+
+**自己的jar包依赖，如果不使用私服仓库管理：**
+
+先把包放到lib文件夹：
+
+![image](https://github.com/tqlnb/little_tips/assets/88382462/283aca0e-eddf-4174-8a99-fbbce5a1971c)
+
+再在pom.xml添加依赖
+
+```xml
+ <dependency>
+      <groupId>com.siteraid.instr.visa</groupId>
+      <artifactId>InsVisaGrpc</artifactId>
+      <version>1.4-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/InsVisaGrpc-1.4-SNAPSHOT.jar</systemPath>
+    </dependency>
+
+    <dependency>
+      <groupId>src</groupId>
+      <artifactId>GrpcPlugin</artifactId>
+      <version>0.0.4-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/GrpcPlugin-0.0.4-SNAPSHOT.jar</systemPath>
+    </dependency>
+```
+
+构建和打包
+
+使用assembly协助打包，可能需要指定mainClass，lib jar包依赖,assembly配置文件 <descriptor>${basedir}/assembly/release.xml</descriptor>
+                
+
+```xml
+      <manifestEntries>
+        <Class-Path>lib/*.jar</Class-Path>
+      </manifestEntries>
+```
+
+
+```xml
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.12.1</version>
+        <inherited>true</inherited>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <compilerArguments>
+            <extdirs>${project.basedir}/lib</extdirs>
+            <extdirs>${project.basedir}/log4j2.xml</extdirs>
+          </compilerArguments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <archive>
+                <manifest>
+                  <mainClass>
+                    ins.daemon.app.Daemon
+                  </mainClass>
+                </manifest>
+                <manifestEntries>
+                  <Class-Path>lib/*.jar</Class-Path>
+                </manifestEntries>
+              </archive>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+              <descriptors>
+                <!--assembly配置文件路径，注意需要在项目中新建文件assembly/release.xml-->
+                <descriptor>${basedir}/assembly/release.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>assembly</directory>
+        <targetPath>${project.build.outputDirectory}/assembly</targetPath>
+        <includes>
+          <include>release.xml</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>lib</directory>
+        <targetPath>${project.build.outputDirectory}/lib</targetPath>
+        <includes>
+          <include>InsVisaGrpc-1.4-SNAPSHOT.jar</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+```
+
+assembly配置文件：
+
+![image](https://github.com/tqlnb/little_tips/assets/88382462/1799651c-e399-4b73-8e2d-8d17831c25f8)
+
+```xml
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+    <id>release</id>
+    <formats>
+        <format>jar</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/</outputDirectory>
+            <useProjectArtifact>true</useProjectArtifact>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>/</outputDirectory>
+            <useProjectArtifact>true</useProjectArtifact>
+            <unpack>true</unpack>
+            <scope>system</scope>
+        </dependencySet>
+    </dependencySets>
+</assembly>
+```
+
+log4j2.xml:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="error">
+    <!--优先级从高到低依次为：OFF、FATAL、ERROR、WARN、INFO、DEBUG、TRACE、ALL -->
+    <!--先定义所有的appender -->
+    <appenders>
+        <!--这个输出控制台的配置 -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
+            <ThresholdFilter level="info" onMatch="ACCEPT"
+                onMismatch="DENY" />
+            <!--这个都知道是输出日志的格式 -->
+            <PatternLayout
+                pattern="%d{%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n" />
+        </Console>
+        <!--这个会打印出所有的信息，每次大小超过size，则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档 -->
+        <RollingFile name="RollingFile" fileName="logs/app.log"
+            filePattern="log/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout
+                pattern="%d{yyyy-MM-dd 'at' HH:mm:ss z} %-5level %class{36} %L %M - %msg%xEx%n" />
+            <SizeBasedTriggeringPolicy size="2MB" />
+        </RollingFile>
+    </appenders>
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效 -->
+    <loggers>
+        <!--建立一个默认的root的logger -->
+        <root level="trace">
+            <appender-ref ref="RollingFile" />
+            <appender-ref ref="Console" />
+        </root>
+    </loggers>
+</configuration> 
+```
+
+
+
