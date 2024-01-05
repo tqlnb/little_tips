@@ -78,9 +78,11 @@ jstack PID
 
 ## 远程调试
 
+
+
 ![image](https://github.com/tqlnb/little_tips/assets/88382462/54df9d1f-e596-4e9c-980f-cfee4daeb639)
 
-
+[简单的VsCode + gdb + gdbserver远程调试C++程序](https://blog.csdn.net/u014552102/article/details/122793256)
 
 ## maven移植
 
